@@ -1,0 +1,8 @@
+main: io.github.karlatemp.vaultecosync.spigot.PluginMain
+version: 1.0-SNAPSHOT
+author: Karlatemp
+name: VaultEcoSync
+depend:
+  - Vault
+  - CMIEInjector
+load: STARTUP

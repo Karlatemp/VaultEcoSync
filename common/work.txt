@@ -1,0 +1,5 @@
+获取 diff
+同步sub server
+获取 database eco
+database-eco += diff
+同步 database eco
