@@ -12,6 +12,8 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import static io.github.karlatemp.vaultecosync.spigot.PluginMain.logger;
+
 public class Listeners implements Listener {
     private final PluginMain core;
     private static final BukkitScheduler SCHEDULER = Bukkit.getScheduler();
@@ -19,12 +21,14 @@ public class Listeners implements Listener {
     public Listeners(PluginMain core) {
         this.core = core;
         SCHEDULER.runTaskTimerAsynchronously(core, () -> {
-            for (var player : Bukkit.getOnlinePlayers())
+            for (var player : Bukkit.getOnlinePlayers()) {
+                logger.log(Level.INFO, "[Auto Update] Updating " + player.getName() + "[" + player.getUniqueId() + "]");
                 try {
                     DatabaseUtils.saveGlobalData(player);
                 } catch (SQLException throwables) {
                     core.getLogger().log(Level.SEVERE, "Failed to setup eco.", throwables);
                 }
+            }
         }, 60 * 20, 60 * 20);
     }
 

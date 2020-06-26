@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.karlatemp.vault-eco-sync"
-version = "1.1-SNAPSHOT"
+version = "1.2-SNAPSHOT"
 
 dependencies {
     testImplementation("junit", "junit", "4.12")

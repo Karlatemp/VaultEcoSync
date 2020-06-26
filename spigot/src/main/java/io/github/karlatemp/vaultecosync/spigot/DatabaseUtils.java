@@ -19,7 +19,7 @@ public class DatabaseUtils {
                 ps.setString(1, player.getUniqueId().toString());
                 var result = ps.executeQuery();
                 if (!result.next()) {
-                    logger.log(Level.SEVERE, "Global data of " + player.getUniqueId() + " not found. create with " + current);
+                    logger.log(Level.WARNING, "Global data of " + player.getUniqueId() + " not found. create with " + current);
                     try (var ps1 = connection.prepareStatement(
                             "INSERT INTO `vault-eco-sync-players` (uuid, eco) VALUES (?, ?)"
                     )) {
@@ -54,10 +54,10 @@ public class DatabaseUtils {
             }
             var target = global + current - server;
 
-            logger.log(Level.SEVERE, "Global [" + player.getUniqueId() + "] = " + global);
-            logger.log(Level.SEVERE, "Current[" + player.getUniqueId() + "] = " + current);
-            logger.log(Level.SEVERE, "Server [" + player.getUniqueId() + "] = " + server);
-            logger.log(Level.SEVERE, "Target [" + player.getUniqueId() + "] = " + target);
+            logger.log(Level.INFO, "Global [" + player.getUniqueId() + "] = " + global);
+            logger.log(Level.INFO, "Current[" + player.getUniqueId() + "] = " + current);
+            logger.log(Level.INFO, "Server [" + player.getUniqueId() + "] = " + server);
+            logger.log(Level.INFO, "Target [" + player.getUniqueId() + "] = " + target);
 
             if (saveGlobalDataV2(player, global, target)) {
                 Bukkit.getScheduler().runTask(PluginMain.INSTANCE, () -> {
@@ -75,7 +75,7 @@ public class DatabaseUtils {
         try (var connection = SQLConnectionManager.getConnection()) {
             // The current same as server
             // diff is zero.
-            logger.log(Level.SEVERE, "Try updating server [" + player.getUniqueId() + "] = " + target);
+            logger.log(Level.INFO, "Try updating server [" + player.getUniqueId() + "] = " + target);
             try (var ps = connection.prepareStatement(
                     "UPDATE `vault-eco-sync-players` SET `eco` = ? WHERE uuid = ? AND eco = ?"
             )) {
@@ -83,19 +83,19 @@ public class DatabaseUtils {
                 ps.setString(2, player.getUniqueId().toString());
                 ps.setDouble(3, old);
                 if (ps.executeUpdate() != 1) {
-                    logger.log(Level.SEVERE, "Update server failed. Try agent.");
+                    logger.log(Level.INFO, "Update server failed. Try agent.");
                     setupGlobalData(player);
                     return false;
                 }
             }
-            logger.log(Level.SEVERE, "Update global successful. Updating server.");
+            logger.log(Level.INFO, "Update global successful. Updating server.");
             updateServer(connection, player, target);
         }
         return true;
     }
 
     private static void updateServer(Connection connection, OfflinePlayer player, double eco) throws SQLException {
-        logger.log(Level.SEVERE, "Update server[" + player.getUniqueId() + "] = " + eco);
+        logger.log(Level.INFO, "Update server[" + player.getUniqueId() + "] = " + eco);
         try (var ps = connection.prepareStatement(
                 "UPDATE `vault-eco-sync-servers` SET `eco` = ? WHERE uuid = ? AND server = ?"
         )) {
